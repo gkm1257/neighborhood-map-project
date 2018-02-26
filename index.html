@@ -4,15 +4,22 @@
 		<title>Neighborhood Map</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="css/icomoon.css">
 		<link rel="stylesheet" type="text/css" href="css/main.css">
 	</head>
 	<body>
 		<div class="container">
-			<div class="list-box">
+			<div class="list-box menu-hidden">
 				<h2>Restaurants in Taichung</h2>
 			</div>
 
-			<div class="map">This is the map</div>
+			<div class="header expand">
+				<a href="#" data-bind="click: clickMenu">
+					<i class="icon-list"></i>
+				</a>
+			</div>
+
+			<div class="map expand">This is the map</div>
 		</div>
 
 		<!-- jQuery library -->

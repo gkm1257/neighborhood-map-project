@@ -3,6 +3,7 @@ body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
+	font-family: sans-serif;
 }
 
 .container {
@@ -13,17 +14,54 @@ body {
 .list-box {
 	width: 300px;
 	height: 100%;
-	padding: 0 0 0 10px;
+	background-color: #3A3636;
+	color: #FFF;
+	transform: translateX(0);
+	transition: all 0.2s;
+}
+
+.header {
+	height: 40px;
+	position: absolute;
+	top: 0;
+	left: 300px;
+	right: 0;
+	background-color: #3A3636;
+	transition: all 0.2s;
+}
+a.menu-click {
+	text-decoration: none;
+}
+.icon-list {
+	font-size: 1.8em;
+	color: white;
+	margin-left: 5px;
+	margin-top: 7px;
+	position: absolute;
 }
 
 .map {
-	height: 100%;
+	height: calc(100% - 40px);
 	position: absolute;
-	left: 320px;
+	left: 300px;
 	bottom: 0;
 	right: 0;
+	margin: 35px 0 0 0;
+	transition: all 0.2s;
+}
+
+.expand {
+	left: 0px;
+	width: 100%;
+	transition: all 0.2s;
 }
 
 h2 {
 	text-align: center;
+	padding-top: 5px;
+}
+
+.menu-hidden {
+	transform: translateX(-300px);
+	transition: all 0.3s;
 }
