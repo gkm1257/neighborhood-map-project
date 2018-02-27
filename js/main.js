@@ -53,6 +53,10 @@ function initMap() {
 		bounds.extend(markers[i].position);
 		markers[i].addListener('click', () => {
 			showInfo(markers[i], infoWindow);
+			markers[i].setAnimation(google.maps.Animation.BOUNCE);
+			setTimeout(() => {
+				markers[i].setAnimation(null);
+			}, 2000);
 		});
 	}
 	map.fitBounds(bounds);
