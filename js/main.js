@@ -1,7 +1,7 @@
 let map;
 let markers = [];
-let bounds;
-let center;
+let bounds; // The bound of all locations
+let center; // The center of all locations
 
 let locations = [
 	{title: "Pier 81", location: {lat: 40.761949, lng: -74.002552}},	
@@ -38,6 +38,7 @@ function initMap() {
 
 	// Create an array of markers by locations array and show the markers on the map
 	bounds = new google.maps.LatLngBounds();
+	let infoWindow = new google.maps.InfoWindow();
 	for (let i = 0; i < locations.length; i++) {
 		let position = locations[i].location;
 		let title = locations[i].title;
@@ -50,6 +51,9 @@ function initMap() {
 		markers.push(marker);
 		markers[i].setMap(map);
 		bounds.extend(markers[i].position);
+		markers[i].addListener('click', () => {
+			showInfo(markers[i], infoWindow);
+		});
 	}
 	map.fitBounds(bounds);
 	center = map.getCenter();
@@ -60,6 +64,17 @@ function updateMap() {
 	google.maps.event.trigger(map, "resize");
 	map.setCenter(center);
 	map.fitBounds(bounds);
+}
+
+function showInfo(marker, infoWindow) {
+	if (infoWindow.marker != marker) {
+		infoWindow.marker = marker;
+		infoWindow.setContent('<div><b>' + marker.title + '</b></div>');
+		infoWindow.open(map, marker);
+		infoWindow.addListener('closeclick', () => {
+			infoWindow.marker = null;
+		})
+	}
 }
 
 $(window).resize(updateMap);
