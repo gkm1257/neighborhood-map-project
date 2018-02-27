@@ -11,6 +11,13 @@
 		<div class="container">
 			<div class="list-box">
 				<h2>Restaurants in Taichung</h2>
+				<div class="search-area">
+					<input class="name-search" type="text" placeholder="Restaurant name">
+					<input class="search-btn" type="button" value="Search">
+				</div>
+				<ul class="list" data-bind="foreach: list">
+					<li class="list-item" data-bind="text: title, click: () => { $parent.selectItem($index); }"></li>
+				</ul>
 			</div>
 
 			<div class="header">

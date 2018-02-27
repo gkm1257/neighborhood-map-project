@@ -2,6 +2,7 @@ let map;
 let markers = [];
 let bounds; // The bound of all locations
 let center; // The center of all locations
+let infoWindow;
 
 let locations = [
 	{title: "Pier 81", location: {lat: 40.761949, lng: -74.002552}},	
@@ -19,6 +20,7 @@ let locations = [
 let ViewModel = function() {
 	let self = this;  // Make sure we can always access the scope of ViewModel everytime
 
+	// Show and hide slide menu
 	this.clickMenu = () => {
 		$(".list-box").toggleClass("menu-hidden");
 		$(".header").toggleClass("expand");
@@ -26,8 +28,16 @@ let ViewModel = function() {
 		setTimeout(updateMap, 50);
 	};
 
-	// this.markers = [];
+	// Add titles of restaurants to an observable array
+	this.list = ko.observable([]);
+	locations.forEach(restaurant => {
+		self.list().push(restaurant);
+	});
 
+	// Show infoWindow when clicked on the list
+	this.selectItem = index => {
+		showInfo(markers[index()], infoWindow);
+	};
 }
 
 function initMap() {
@@ -38,7 +48,7 @@ function initMap() {
 
 	// Create an array of markers by locations array and show the markers on the map
 	bounds = new google.maps.LatLngBounds();
-	let infoWindow = new google.maps.InfoWindow();
+	infoWindow = new google.maps.InfoWindow();
 	for (let i = 0; i < locations.length; i++) {
 		let position = locations[i].location;
 		let title = locations[i].title;
@@ -53,10 +63,6 @@ function initMap() {
 		bounds.extend(markers[i].position);
 		markers[i].addListener('click', () => {
 			showInfo(markers[i], infoWindow);
-			markers[i].setAnimation(google.maps.Animation.BOUNCE);
-			setTimeout(() => {
-				markers[i].setAnimation(null);
-			}, 2000);
 		});
 	}
 	map.fitBounds(bounds);
@@ -77,10 +83,16 @@ function showInfo(marker, infoWindow) {
 		infoWindow.open(map, marker);
 		infoWindow.addListener('closeclick', () => {
 			infoWindow.marker = null;
-		})
+		});
+		// Add animation to marker when selected
+		marker.setAnimation(google.maps.Animation.BOUNCE);
+		setTimeout(() => {
+			marker.setAnimation(null);
+		}, 2000);
 	}
 }
 
+// Update the map when window resized
 $(window).resize(updateMap);
 
 ko.applyBindings(new ViewModel());
