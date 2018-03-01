@@ -13,7 +13,7 @@
 				<h2>Restaurants in Taichung</h2>
 				<div class="search-area">
 					<input class="name-search" type="text" placeholder="Restaurant name" data-bind="textInput: searchText, event: { 'keyup': filterMarker }">
-					<input class="search-btn" type="button" value="Search">
+					<input class="search-btn" type="button" value="Search" data-bind="click: filterMarker">
 				</div>
 				<ul class="list" data-bind="foreach: filteredList">
 					<li class="list-item" data-bind="text: title, click: $parent.selectItem"></li>
