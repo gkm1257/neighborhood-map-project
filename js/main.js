@@ -17,6 +17,11 @@ let locations = [
 	{title: "Mr Chow", location: {lat: 40.758613, lng: -73.964499}}	
 ];
 
+let Place = function(data, index) {
+	this.title = data.title;
+	this.id = index;
+}
+
 let ViewModel = function() {
 	let self = this;  // Make sure we can always access the scope of ViewModel everytime
 
@@ -30,13 +35,33 @@ let ViewModel = function() {
 
 	// Add titles of restaurants to an observable array
 	this.list = ko.observable([]);
-	locations.forEach(restaurant => {
-		self.list().push(restaurant);
-	});
+	for (let i = 0; i < locations.length; i++) {
+		self.list().push(new Place(locations[i], i));
+	}
 
 	// Show infoWindow when clicked on the list
-	this.selectItem = index => {
-		showInfo(markers[index()], infoWindow);
+	this.selectItem = clickedItem => {
+		showInfo(markers[clickedItem.id], infoWindow);
+	};
+
+	// Get text-input from the input box
+	this.searchText = ko.observable("");
+
+	// Filter search results in the list
+	this.filteredList = ko.computed(() => {
+		if (self.searchText().length > 0) {
+			return self.list().filter(place => place.title.toLowerCase().indexOf(self.searchText().toLowerCase()) > -1);
+		} else {
+			return self.list();
+		}
+	});
+
+	// Filter markers
+	this.filterMarker = () => {
+		markers.forEach(marker => marker.setVisible(false));
+		self.filteredList().forEach(place => {
+			markers[place.id].setVisible(true);
+		});
 	};
 }
 
@@ -88,7 +113,7 @@ function showInfo(marker, infoWindow) {
 		marker.setAnimation(google.maps.Animation.BOUNCE);
 		setTimeout(() => {
 			marker.setAnimation(null);
-		}, 2000);
+		}, 1400);
 	}
 }
 
