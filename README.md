@@ -16,4 +16,4 @@ There are 2 APIs used in this project:
 
 ---
 
-Hope you enjoy exploring more restaurants in NYC ::smile::
+Hope you enjoy exploring more restaurants in NYC :smile:
