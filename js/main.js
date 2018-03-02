@@ -139,6 +139,7 @@ function showInfo(marker, infoWindow) {
 }
 // Handle Google Maps API error
 function googleError() {
+
 	alert("Map fails to load!");
 }
 
@@ -157,6 +158,16 @@ function initZomato() {
 				headers: {
 			        "X-Zomato-API-Key": apiKey
 				}
+		    })
+		    .then(response => {
+		    	if (!response.ok) {
+		    		if (response.status == 500) {
+		            	alert("Oops! Zomato API access limit exceeded.");
+		    		} else {
+		    			throw Error(response.statusText);
+		    		}
+		        }
+		        return response;
 		    })
 			.then(response => response.json())
 			.catch(error => requestError(error))
