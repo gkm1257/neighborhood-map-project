@@ -1,20 +1,22 @@
 let map;
-let markers = [];
+let markers = []; // The array saves all markers
 let bounds; // The bound of all locations
 let center; // The center of all locations
-let infoWindow;
+let infoWindow; // The window showing more info
+let infoList = []; // The array saves info fetched from Zomato
+let allInfoLoaded = false; // True if all information loaded successfully
 
 let locations = [
-	{title: "Pier 81", location: {lat: 40.761949, lng: -74.002552}},	
-	{title: "Reynard", location: {lat: 40.722482, lng: -73.956636}},	
-	{title: "Pera Soho", location: {lat: 40.723918, lng: -74.003515}},	
-	{title: "Momofuku Noodle Bar", location: {lat: 40.729438, lng: -73.984548}},	
-	{title: "Pardon My French", location: {lat: 40.724751, lng: -73.981142}},	
-	{title: "Zum Schneider NYC", location: {lat: 40.724306, lng: -73.978906}},	
-	{title: "Katz's Delicatessen", location: {lat: 40.722253, lng: -73.987342}},	
-	{title: "Tijuana Picnic", location: {lat: 40.720931, lng: -73.987175}},	
-	{title: "Nippon", location: {lat: 40.757527, lng: -73.970301}},	
-	{title: "Mr Chow", location: {lat: 40.758613, lng: -73.964499}}	
+	{title: "Hatsuhana", location: {lat: 40.757129, lng: -73.976963}, zomatoId: 16767680},
+	{title: "Pure Thai Cookhouse", location: {lat: 40.764230, lng: -73.988196}, zomatoId: 16785728},
+	{title: "Burger Joint", location: {lat: 40.764185, lng: -73.978405}, zomatoId: 16761402},
+	{title: "Momofuku Noodle Bar", location: {lat: 40.729438, lng: -73.984548}, zomatoId: 16781904},
+	{title: "Lombardi's Pizza", location: {lat: 40.739946, lng: -73.998261}, zomatoId: 16771079},
+	{title: "Joe's Shanghai", location: {lat: 40.714747, lng: -73.997672}, zomatoId: 16769041},
+	{title: "Katz's Delicatessen", location: {lat: 40.722253, lng: -73.987342}, zomatoId: 16769546},
+	{title: "Gramercy Tavern", location: {lat: 40.738716, lng: -73.988389}, zomatoId: 16767139},
+	{title: "Szechuan Gourmet", location: {lat: 40.752307, lng: -73.983522}, zomatoId: 16779008},
+	{title: "Peter Luger Steak House", location: {lat: 40.709877, lng: -73.962341}, zomatoId: 16775039}
 ];
 
 let Place = function(data, index) {
@@ -101,10 +103,25 @@ function updateMap() {
 	map.fitBounds(bounds);
 }
 
+// Populate infoWindow and show more info
 function showInfo(marker, infoWindow) {
 	if (infoWindow.marker != marker) {
 		infoWindow.marker = marker;
-		infoWindow.setContent('<div><b>' + marker.title + '</b></div>');
+		if (allInfoLoaded) {
+			infoWindow.setContent(
+				`<div>
+					<h3>${marker.title}</h3>
+					<p><b>Cuisines: ${infoList[infoWindow.marker.id].cuisine}</b></p>
+					<a href=${infoList[infoWindow.marker.id].zUrl} target="_blank">More info on Zomato</a>
+				</div>`
+			);
+		} else {
+			infoWindow.setContent(
+				`<div>
+					<h3>${marker.title}</h3>
+				</div>`
+			);
+		}
 		infoWindow.open(map, marker);
 		infoWindow.addListener('closeclick', () => {
 			infoWindow.marker = null;
@@ -117,7 +134,46 @@ function showInfo(marker, infoWindow) {
 	}
 }
 
+
+// Zomato API
+function initZomato() {
+	const apiKey = "4e6d41b81688666b66f6cac2084776a0";
+	let url = "https://developers.zomato.com/api/v2.1/restaurant?res_id=";
+
+	// Fetch all restaurants' detail
+	let promises = [];
+	locations.forEach((place, index) => {
+		let searchUrl = url + place.zomatoId;
+		promises.push(
+			fetch(searchUrl, {
+				headers: {
+			        "X-Zomato-API-Key": apiKey
+				}
+		    })
+			.then(response => response.json())
+			.catch(error => requestError(error))
+			.then(response => getResult(response, index))
+			.catch(error => requestError(error))
+		);
+	});
+	Promise.all(promises).then(() => {
+		allInfoLoaded = true;
+	});
+}
+// Save interested info into infoList
+function getResult(result, index) {
+
+	infoList.splice(index, 0, {cuisine: result.cuisines, zUrl: result.url});
+}
+// Error handling
+function requestError(error) {
+
+	throw Error('Search Request Error');
+	alert("Error occurred when fetching data from Zomato");
+}
+
 // Update the map when window resized
 $(window).resize(updateMap);
 
 ko.applyBindings(new ViewModel());
+initZomato();
