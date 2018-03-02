@@ -137,6 +137,10 @@ function showInfo(marker, infoWindow) {
 		}, 1400);
 	}
 }
+// Handle Google Maps API error
+function googleError() {
+	alert("Map fails to load!");
+}
 
 
 // Zomato API
