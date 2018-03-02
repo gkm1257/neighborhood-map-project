@@ -32,7 +32,7 @@ let ViewModel = function() {
 		$(".list-box").toggleClass("menu-hidden");
 		$(".header").toggleClass("expand");
 		$(".map").toggleClass("expand");
-		setTimeout(updateMap, 50);
+		setTimeout(updateMap, 200);
 	};
 
 	// Add titles of restaurants to an observable array
@@ -99,8 +99,10 @@ function initMap() {
 // Update the map when map size changed
 function updateMap() {
 	google.maps.event.trigger(map, "resize");
-	map.setCenter(center);
-	map.fitBounds(bounds);
+	if (infoWindow.marker === null) {
+		map.setCenter(center);
+		map.fitBounds(bounds);
+	}
 }
 
 // Populate infoWindow and show more info
@@ -111,8 +113,8 @@ function showInfo(marker, infoWindow) {
 			infoWindow.setContent(
 				`<div>
 					<h3>${marker.title}</h3>
-					<p><b>Cuisines: ${infoList[infoWindow.marker.id].cuisine}</b></p>
-					<a href=${infoList[infoWindow.marker.id].zUrl} target="_blank">More info on Zomato</a>
+					<p><b>Cuisines: ${infoList[marker.id].cuisine}</b></p>
+					<a href=${infoList[marker.id].zUrl} target="_blank">More info on Zomato</a>
 				</div>`
 			);
 		} else {
