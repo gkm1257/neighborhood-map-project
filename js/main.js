@@ -22,7 +22,7 @@ let locations = [
 let Place = function(data, index) {
 	this.title = data.title;
 	this.id = index;
-}
+};
 
 let ViewModel = function() {
 	let self = this;  // Make sure we can always access the scope of ViewModel everytime
@@ -65,7 +65,7 @@ let ViewModel = function() {
 			markers[place.id].setVisible(true);
 		});
 	};
-}
+};
 
 function initMap() {
 	map = new google.maps.Map(document.getElementsByClassName("map")[0], {
@@ -88,10 +88,12 @@ function initMap() {
 		markers.push(marker);
 		markers[i].setMap(map);
 		bounds.extend(markers[i].position);
-		markers[i].addListener('click', () => {
-			showInfo(markers[i], infoWindow);
-		});
 	}
+	markers.forEach(marker => {
+		marker.addListener('click', () => {
+			showInfo(marker, infoWindow);
+		});
+	});
 	map.fitBounds(bounds);
 	center = map.getCenter();
 }
@@ -170,7 +172,6 @@ function getResult(result, index) {
 // Error handling
 function requestError(error) {
 
-	throw Error('Search Request Error');
 	alert("Error occurred when fetching data from Zomato");
 }
 
