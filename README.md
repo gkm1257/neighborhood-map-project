@@ -2,7 +2,7 @@
 Find out some awesome restaurants in NYC!!
 
 ## Instructions
-1. Download the project files to your computer then load the `index.html` file in your favorite browser.
+1. Download the project files to your computer then load the `index.html` file in your favorite browser. Or simply click [this link](https://gkm1257.github.io/neighborhood-map-project/).
 2. You can now see a list of restaurants and a map with markers.
 3. Click on any restaurant shown on the list to get more information.
 4. Click on any marker will show more information, too.
